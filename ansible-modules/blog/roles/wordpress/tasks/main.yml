@@ -1,0 +1,57 @@
+---
+- name: Install nginx and PHP 7.4 packages
+  apt:
+    pkg:
+      - nginx
+      - unzip
+      - php-imagick
+      - php7.4-zip
+      - php7.4-curl
+      - php7.4-fpm
+      - php7.4-mbstring
+      - php7.4-cli
+      - php7.4-bcmath
+      - php7.4-xml
+      - php7.4-mysql
+      - php7.4-common
+      - php7.4-gd
+      - php7.4-json
+    update_cache: true
+
+- name: Setting up nginx vhost config
+  template:
+    src: vhost.nginx.conf.j2
+    dest: /etc/nginx/conf.d/blog.conf
+
+- name: Remove /etc/nginx/sites-enabled/default file
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+
+- name: Download Wordpress project and unzip
+  unarchive:
+    src: https://wordpress.org/latest.zip
+    dest: /var/www/html
+    remote_src: true
+
+- name: Rename Wordpress folder to blog
+  command:
+    cmd: mv /var/www/html/wordpress /var/www/html/blog
+
+- name: Updating wp-config
+  template:
+    src: wp-config.php.j2
+    dest: /var/www/html/blog/wp-config.php
+
+- name: Change Wordpress folder owner (permissions)
+  file:
+    path: /var/www/html/blog
+    owner: www-data
+    group: www-data
+    mode: "0755"
+    recurse: true
+
+- name: Restart nginx
+  service:
+    name: nginx
+    state: restarted

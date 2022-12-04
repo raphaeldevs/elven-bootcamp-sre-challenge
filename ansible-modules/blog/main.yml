@@ -1,0 +1,10 @@
+---
+- name: Wordpress Installation
+  hosts: localhost
+  become: true
+  collections:
+    - amazon.aws.aws_secret
+  roles:
+    - aws_secrets_manager
+    - mysql-server
+    - wordpress

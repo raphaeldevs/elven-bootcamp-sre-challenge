@@ -1,0 +1,4 @@
+---
+database_user: "wp_user"
+database_password: "Wp@12345"
+database_name: "blog"

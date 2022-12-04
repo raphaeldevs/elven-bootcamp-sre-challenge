@@ -1,0 +1,24 @@
+---
+- name: Install MySQL Server
+  apt:
+    pkg:
+      - mysql-server
+      - mysql-client
+      - python3-mysqldb
+      - libmysqlclient-dev
+
+    update_cache: true
+    state: present
+
+- name: Create user for Wordpress
+  mysql_user:
+    name: "wp_user"
+    password: "Wp@12345"
+    priv: "*.*:ALL"
+    host: "%"
+    state: present
+
+- name: Create database for Wordpress
+  mysql_db:
+    name: "blog"
+    state: present

@@ -1,0 +1,19 @@
+---
+- name: Install pip
+  apt:
+    name:
+      - python3-pip
+    state: present
+
+- name: Install botocore and boto3
+  pip:
+    name:
+      - boto3
+      - botocore
+
+- name: Try fetch secrets from AWS Secrets Manager
+  ignore_errors: true
+  collections:
+    - amazon.aws.aws_secret
+  debug:
+    msg: "{{ lookup('amazon.aws.aws_secret', 'my-secrets') }}"
